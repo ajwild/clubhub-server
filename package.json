@@ -1,21 +1,40 @@
 {
   "name": "clubhub-server",
   "license": "UNLICENSED",
+  "scripts": {
+    "build": "nexus build",
+    "dev": "nexus dev",
+    "format": "xo --fix",
+    "start": "node node_modules/.build",
+    "test": "xo"
+  },
   "dependencies": {
     "nexus": "^0.21.0"
   },
-  "scripts": {
-    "format": "npx prettier --write './**/*.{ts,md}'",
-    "dev": "nexus dev",
-    "build": "nexus build",
-    "start": "node node_modules/.build"
+  "devDependencies": {
+    "@types/node": "^14.0.4",
+    "eslint-plugin-functional": "^3.0.1",
+    "xo": "^0.30.0"
+  },
+  "xo": {
+    "prettier": true,
+    "space": true,
+    "envs": [
+      "node"
+    ],
+    "plugins": [
+      "@typescript-eslint",
+      "functional"
+    ],
+    "extends": [
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:functional/external-recommended",
+      "plugin:functional/recommended"
+    ]
   },
   "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
-  "devDependencies": {
-    "prettier": "^2.0.5"
+    "bracketSpacing": true,
+    "trailingComma": "es5"
   }
 }
