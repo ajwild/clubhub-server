@@ -1,6 +1,5 @@
-# Node
-node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+/node_modules
+/fire*-*.log*
+/npm-*.log*
+/yarn-*.log*
+/.env

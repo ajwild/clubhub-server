@@ -3,17 +3,24 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nexus build",
-    "dev": "nexus dev",
+    "dev": "npm run dev:firestore & npm run dev:nexus",
+    "dev:firestore": "firebase emulators:start --only firestore",
+    "dev:nexus": "env-cmd nexus dev",
     "format": "xo --fix",
     "start": "node node_modules/.build",
     "test": "xo"
   },
   "dependencies": {
+    "firebase-admin": "^8.12.1",
+    "js-data": "^4.0.0-beta.4",
+    "js-data-adapter": "^1.0.1",
     "nexus": "^0.21.0"
   },
   "devDependencies": {
     "@types/node": "^14.0.4",
+    "env-cmd": "^10.1.0",
     "eslint-plugin-functional": "^3.0.1",
+    "firebase-tools": "^8.3.0",
     "xo": "^0.30.0"
   },
   "xo": {

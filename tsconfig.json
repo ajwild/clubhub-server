@@ -6,9 +6,9 @@
       "esnext"
     ],
     "strict": true,
-    "rootDir": "api"
+    "rootDir": "src"
   },
   "include": [
-    "api"
+    "src"
   ]
 }
