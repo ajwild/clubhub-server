@@ -6,10 +6,10 @@ eslint-disable
 
 import { schema } from 'nexus';
 
-import { clubQuery } from './club';
-import { userQuery } from './user';
+import { clubQuery } from './models/club';
+import { userQuery } from './models/user';
 
-export const Query = schema.queryType({
+export const query = schema.queryType({
   definition(t) {
     clubQuery(t);
     userQuery(t);

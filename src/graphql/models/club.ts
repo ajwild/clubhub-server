@@ -6,39 +6,36 @@ eslint-disable
 
 import { schema } from 'nexus';
 
-import { store } from '../db';
+import { clubSchema, clubService } from '../../database';
+import { convertSchemaToDefinition } from '../../utilities';
 
-export const clubObject = schema.objectType({
+export const clubObject = {
   name: 'Club',
-  definition(t) {
-    t.id('id');
-    t.string('name');
-    t.string('description');
-  },
-});
+  definition: convertSchemaToDefinition(clubSchema),
+};
 
-export function clubQuery(t) {
+export function clubQuery(t): typeof t {
   t.field('club', {
     type: 'Club',
     args: {
       id: schema.idArg({ required: true }),
     },
     async resolve(_root, { id }, _ctx) {
-      return store.find('club', id, {});
+      return clubService.find(id);
     },
   });
 
   t.list.field('clubs', {
     type: 'Club',
     async resolve(_root, _args, _ctx) {
-      return store.findAll('club', {}, {});
+      return clubService.findAll({});
     },
   });
 
   return t;
 }
 
-export function clubMutation(t) {
+export function clubMutation(t): typeof t {
   t.field('createClub', {
     type: 'Club',
     args: {
@@ -46,7 +43,7 @@ export function clubMutation(t) {
       description: schema.stringArg(),
     },
     async resolve(_root, { ...properties }, _ctx) {
-      return store.create('club', properties, {});
+      return clubService.create(properties);
     },
   });
 
@@ -56,7 +53,7 @@ export function clubMutation(t) {
       id: schema.idArg({ required: true }),
     },
     async resolve(_root, { id }, _ctx) {
-      return store.destroy('club', id, {});
+      return clubService.destroy(id);
     },
   });
 
@@ -68,7 +65,7 @@ export function clubMutation(t) {
       description: schema.stringArg(),
     },
     async resolve(_root, { id, ...properties }, _ctx) {
-      return store.update('club', id, properties, {});
+      return clubService.update(id, properties);
     },
   });
 

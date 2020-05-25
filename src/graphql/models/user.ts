@@ -6,39 +6,36 @@ eslint-disable
 
 import { schema } from 'nexus';
 
-import { store } from '../db';
+import { userSchema, userService } from '../../database';
+import { convertSchemaToDefinition } from '../../utilities';
 
-export const userObject = schema.objectType({
+export const userObject = {
   name: 'User',
-  definition(t) {
-    t.id('id');
-    t.string('name');
-    t.string('description');
-  },
-});
+  definition: convertSchemaToDefinition(userSchema),
+};
 
-export function userQuery(t) {
+export function userQuery(t): typeof t {
   t.field('user', {
     type: 'User',
     args: {
       id: schema.idArg({ required: true }),
     },
     async resolve(_root, { id }, _ctx) {
-      return store.find('user', id, {});
+      return userService.find(id);
     },
   });
 
   t.list.field('users', {
     type: 'User',
     async resolve(_root, _args, _ctx) {
-      return store.findAll('user', {}, {});
+      return userService.findAll({});
     },
   });
 
   return t;
 }
 
-export function userMutation(t) {
+export function userMutation(t): typeof t {
   t.field('createUser', {
     type: 'User',
     args: {
@@ -46,7 +43,7 @@ export function userMutation(t) {
       description: schema.stringArg(),
     },
     async resolve(_root, { ...properties }, _ctx) {
-      return store.create('user', properties, {});
+      return userService.create(properties);
     },
   });
 
@@ -56,7 +53,7 @@ export function userMutation(t) {
       id: schema.idArg({ required: true }),
     },
     async resolve(_root, { id }, _ctx) {
-      return store.destroy('user', id, {});
+      return userService.destroy(id);
     },
   });
 
@@ -68,7 +65,7 @@ export function userMutation(t) {
       description: schema.stringArg(),
     },
     async resolve(_root, { id, ...properties }, _ctx) {
-      return store.update('user', id, properties, {});
+      return userService.update(id, properties);
     },
   });
 

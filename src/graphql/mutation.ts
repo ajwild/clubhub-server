@@ -6,10 +6,10 @@ eslint-disable
 
 import { schema } from 'nexus';
 
-import { clubMutation } from './club';
-import { userMutation } from './user';
+import { clubMutation } from './models/club';
+import { userMutation } from './models/user';
 
-export const Mutation = schema.mutationType({
+export const mutation = schema.mutationType({
   definition(t) {
     clubMutation(t);
     userMutation(t);

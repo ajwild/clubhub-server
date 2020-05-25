@@ -2,8 +2,12 @@
 
 import { Adapter } from 'js-data-adapter';
 
-function prepareDoc(docRef) {
-  return { id: docRef.id, ...docRef.data() };
+function removeUndefinedProperties(document) {
+  return JSON.parse(JSON.stringify(document));
+}
+
+function prepareDoc(documentReference) {
+  return { id: documentReference.id, ...documentReference.data() };
 }
 
 function returnIfExists(documentSnapshot, cursor) {
@@ -26,7 +30,9 @@ async function _findAll(db, mapper, _query, _options = {}) {
 }
 
 async function _create(db, mapper, properties = {}, _options = {}) {
-  const { id } = await db.collection(mapper.name).add(properties);
+  const { id } = await db
+    .collection(mapper.name)
+    .add(removeUndefinedProperties(properties));
   return _find(db, mapper, id, _options);
 }
 
@@ -38,7 +44,10 @@ async function _destroy(db, mapper, id: string, _options = {}) {
 
 async function _update(db, mapper, id: string, properties = {}, _options = {}) {
   // eslint-disable-next-line functional/no-expression-statement
-  await db.collection(mapper.name).doc(id).update(properties);
+  await db
+    .collection(mapper.name)
+    .doc(id)
+    .update(removeUndefinedProperties(properties));
   return _find(db, mapper, id, _options);
 }
 

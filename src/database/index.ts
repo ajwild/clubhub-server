@@ -2,7 +2,10 @@
 
 import * as admin from 'firebase-admin';
 import { Container } from 'js-data';
+
 import { FirestoreAdapter } from './js-data-firestore';
+import { clubSchema } from './schemas/club';
+import { userSchema } from './schemas/user';
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -19,7 +22,7 @@ const adapter = new FirestoreAdapter({ db });
 
 store.registerAdapter('firestore', adapter, { default: true });
 
-export const clubMapper = store.defineMapper('club');
-export const userMapper = store.defineMapper('user');
+const clubService = store.defineMapper('club', { schema: clubSchema });
+const userService = store.defineMapper('user', { schema: userSchema });
 
-export { store };
+export { db, store, clubSchema, clubService, userSchema, userService };
