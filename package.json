@@ -8,7 +8,9 @@
     "dev:nexus": "env-cmd nexus dev",
     "format": "xo --fix",
     "start": "node node_modules/.build",
-    "test": "xo"
+    "test": "npm run test:lint && npm run test:unit",
+    "test:lint": "xo",
+    "test:unit": "jest"
   },
   "dependencies": {
     "firebase-admin": "^8.12.1",
@@ -17,31 +19,57 @@
     "nexus": "^0.21.0"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.3",
     "@types/node": "^14.0.4",
     "env-cmd": "^10.1.0",
     "eslint-plugin-functional": "^3.0.1",
+    "eslint-plugin-jest": "^23.13.2",
     "firebase-tools": "^8.3.0",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3",
     "xo": "^0.30.0"
   },
   "xo": {
     "prettier": true,
     "space": true,
     "envs": [
+      "jest",
       "node"
     ],
-    "plugins": [
-      "@typescript-eslint",
-      "functional"
-    ],
-    "extends": [
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:functional/external-recommended",
-      "plugin:functional/recommended"
+    "overrides": [
+      {
+        "files": "!./**/*.test.ts",
+        "plugins": [
+          "functional"
+        ],
+        "extends": [
+          "plugin:functional/external-recommended",
+          "plugin:functional/recommended"
+        ]
+      },
+      {
+        "files": "./**/*.test.ts",
+        "plugins": [
+          "jest"
+        ],
+        "extends": [
+          "plugin:jest/all"
+        ],
+        "rules": {
+          "jest/no-hooks": 0
+        }
+      }
     ]
   },
   "prettier": {
     "bracketSpacing": true,
     "trailingComma": "es5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "clearMocks": true,
+    "coverageDirectory": "coverage",
+    "testEnvironment": "node"
   }
 }
