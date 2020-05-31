@@ -1,5 +1,5 @@
-import { chain, fold, left, right, Either } from 'fp-ts/es6/Either';
-import { pipe } from 'fp-ts/es6/pipeable';
+import { chain, fold, left, right, Either } from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { verify } from 'jsonwebtoken';
 import { path } from 'ramda';
 

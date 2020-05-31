@@ -1,14 +1,13 @@
 /* eslint-disable functional/no-expression-statement */
 
-import * as admin from 'firebase-admin';
+import { Firestore } from '@google-cloud/firestore';
 import { Container } from 'js-data';
 
 import { FirestoreAdapter } from './js-data-firestore';
 import { clubSchema } from './schemas/club';
 import { userSchema } from './schemas/user';
 
-admin.initializeApp();
-const db = admin.firestore();
+const db = new Firestore();
 // eslint-disable-next-line functional/no-conditional-statement
 if (process.env.FIRESTORE_HOST) {
   db.settings({

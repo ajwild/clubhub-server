@@ -13,7 +13,7 @@ describe('authentication', () => {
     args: Readonly<Record<string, unknown>>,
     ctx: Readonly<Record<string, unknown>>,
     info: Readonly<Record<string, unknown>>,
-    next: Readonly<jest.Mock>
+    next: () => any
   ) => Promise<void>;
 
   beforeEach(() => {

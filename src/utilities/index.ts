@@ -1,18 +1,18 @@
-type Options = {
-  readonly properties: {
-    readonly [key: string]: {
-      readonly type: string;
-    };
-  };
-  readonly required: readonly string[];
-};
+import { Schema } from 'js-data';
 
-export function convertSchemaToDefinition({ properties, required }: Options) {
-  return function (t): typeof t {
+import { DefinitionBlock, SchemaPropertyType } from '../types';
+
+export function convertSchemaToDefinition<TypeName extends string>({
+  properties,
+  required,
+}: Readonly<Partial<Schema>>) {
+  return function (t: DefinitionBlock<TypeName>): DefinitionBlock<TypeName> {
     /* eslint-disable functional/no-expression-statement */
     Object.keys(properties).forEach((property) => {
-      const type = property === 'id' ? property : properties[property].type;
+      const type: SchemaPropertyType =
+        property === 'id' ? property : properties[property].type;
       const options = { nullable: !required.includes(property) };
+      // @ts-ignore: Not sure why it's complaining about nullable in options
       t[type](property, options);
     });
     /* eslint-enable functional/no-expression-statement */

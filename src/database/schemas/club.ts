@@ -1,4 +1,6 @@
-export const clubSchema = {
+import { Schema } from 'js-data';
+
+export const clubSchema: Partial<Schema> = {
   type: 'object',
   properties: {
     id: { type: 'string' },
