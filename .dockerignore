@@ -1,0 +1,6 @@
+*
+!/src
+!/Dockerfile
+!/package*.json
+!/README.md
+!/tsconfig.json

@@ -9,8 +9,9 @@ schema.middleware(authentication);
 
 use(permissions);
 
+const { PORT } = process.env;
 settings.change({
   server: {
-    port: 4001,
+    port: PORT ? Number.parseInt(PORT, 10) : 4000,
   },
 });

@@ -1,5 +1,7 @@
+/.nexus
 /node_modules
 /fire*-*.log*
 /npm-*.log*
 /yarn-*.log*
-/.env
+/.env*
+!/.env*.example
