@@ -1,10 +1,11 @@
-import { schema } from 'nexus';
+import { objectType } from '@nexus/schema';
 
 import { clubQuery } from './models/club';
 import { userQuery } from './models/user';
 import { DefinitionBlock } from '../types';
 
-export const query = schema.queryType({
+export const Query = objectType({
+  name: 'Query',
   definition(t: DefinitionBlock<'Query'>): DefinitionBlock<'Query'> {
     /* eslint-disable functional/no-expression-statement */
     clubQuery(t);

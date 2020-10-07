@@ -1,4 +1,4 @@
-import { shield, rule, allow, deny, not, and } from 'nexus-plugin-shield';
+import { shield, rule, allow, deny, not, and } from 'graphql-shield';
 
 const isAuthenticated = rule({ cache: 'contextual' })(
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -19,15 +19,15 @@ const isSameUser = rule({ cache: 'strict' })((_parent, args, ctx, _info) => {
   return ctx.user.id === args.id;
 });
 
-export const permissions = shield({
-  rules: {
+export const permissions = shield(
+  {
     Query: {
       club: allow,
       clubs: allow,
       user: allow,
       users: allow,
     },
-    Mutations: {
+    Mutation: {
       createClub: isAuthenticated,
       deleteClub: and(isAuthenticated, isClubAdmin),
       updateClub: and(isAuthenticated, isClubAdmin),
@@ -35,10 +35,10 @@ export const permissions = shield({
       deleteUser: and(isAuthenticated, isSameUser),
       updateUser: and(isAuthenticated, isSameUser),
     },
-    User: allow,
     Club: allow,
+    User: allow,
   },
-  options: {
+  {
     fallbackRule: deny,
-  },
-});
+  }
+);

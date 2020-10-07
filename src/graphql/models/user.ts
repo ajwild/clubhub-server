@@ -1,25 +1,23 @@
 /* eslint-disable functional/no-expression-statement */
 
-import { schema } from 'nexus';
+import { idArg, objectType, stringArg } from '@nexus/schema';
 
 import { userSchema, userService } from '../../database';
 import { Collections, DefinitionBlock } from '../../types';
 import { convertSchemaToDefinition } from '../../utilities';
 
-const { User } = Collections;
-
-export const userObject = {
-  name: User as typeof User,
-  definition: convertSchemaToDefinition<typeof User>(userSchema),
-};
+export const User = objectType({
+  name: Collections.User as typeof Collections.User,
+  definition: convertSchemaToDefinition<typeof Collections.User>(userSchema),
+});
 
 export function userQuery(
   t: DefinitionBlock<'Query'>
 ): DefinitionBlock<'Query'> {
   t.field('user', {
-    type: User,
+    type: Collections.User,
     args: {
-      id: schema.idArg({ required: true }),
+      id: idArg({ required: true }),
     },
     async resolve(_root: any, { id }: { readonly id: string }, _ctx: any) {
       // Unicorn assumes this is Array.prototype.find()
@@ -29,7 +27,7 @@ export function userQuery(
   });
 
   t.list.field('users', {
-    type: User,
+    type: Collections.User,
     async resolve(_root: any, _args: any, _ctx: any) {
       return userService.findAll({});
     },
@@ -42,10 +40,10 @@ export function userMutation(
   t: DefinitionBlock<'Mutation'>
 ): DefinitionBlock<'Mutation'> {
   t.field('createUser', {
-    type: User,
+    type: Collections.User,
     args: {
-      name: schema.stringArg({ required: true }),
-      description: schema.stringArg(),
+      name: stringArg({ required: true }),
+      description: stringArg(),
     },
     async resolve(
       _root: any,
@@ -57,9 +55,9 @@ export function userMutation(
   });
 
   t.field('deleteUser', {
-    type: User,
+    type: Collections.User,
     args: {
-      id: schema.idArg({ required: true }),
+      id: idArg({ required: true }),
     },
     async resolve(_root: any, { id }: { readonly id: string }, _ctx: any) {
       return userService.destroy(id);
@@ -67,11 +65,11 @@ export function userMutation(
   });
 
   t.field('updateUser', {
-    type: User,
+    type: Collections.User,
     args: {
-      id: schema.idArg({ required: true }),
-      name: schema.stringArg(),
-      description: schema.stringArg(),
+      id: idArg({ required: true }),
+      name: stringArg(),
+      description: stringArg(),
     },
     async resolve(
       _root: any,

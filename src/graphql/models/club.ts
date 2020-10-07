@@ -1,25 +1,23 @@
 /* eslint-disable functional/no-expression-statement */
 
-import { schema } from 'nexus';
+import { idArg, objectType, stringArg } from '@nexus/schema';
 
 import { clubSchema, clubService } from '../../database';
 import { Collections, DefinitionBlock } from '../../types';
 import { convertSchemaToDefinition } from '../../utilities';
 
-const { Club } = Collections;
-
-export const clubObject = {
-  name: Club as typeof Club,
-  definition: convertSchemaToDefinition<typeof Club>(clubSchema),
-};
+export const Club = objectType({
+  name: Collections.Club as typeof Collections.Club,
+  definition: convertSchemaToDefinition<typeof Collections.Club>(clubSchema),
+});
 
 export function clubQuery(
   t: DefinitionBlock<'Query'>
 ): DefinitionBlock<'Query'> {
   t.field('club', {
-    type: Club,
+    type: Collections.Club,
     args: {
-      id: schema.idArg({ required: true }),
+      id: idArg({ required: true }),
     },
     async resolve(
       _root: any,
@@ -33,7 +31,7 @@ export function clubQuery(
   });
 
   t.list.field('clubs', {
-    type: Club,
+    type: Collections.Club,
     async resolve(_root: any, _args: any, _ctx: any) {
       return clubService.findAll({});
     },
@@ -46,10 +44,10 @@ export function clubMutation(
   t: DefinitionBlock<'Mutation'>
 ): DefinitionBlock<'Mutation'> {
   t.field('createClub', {
-    type: Club,
+    type: Collections.Club,
     args: {
-      name: schema.stringArg({ required: true }),
-      description: schema.stringArg(),
+      name: stringArg({ required: true }),
+      description: stringArg(),
     },
     async resolve(
       _root: any,
@@ -61,9 +59,9 @@ export function clubMutation(
   });
 
   t.field('deleteClub', {
-    type: Club,
+    type: Collections.Club,
     args: {
-      id: schema.idArg({ required: true }),
+      id: idArg({ required: true }),
     },
     async resolve(_root: any, { id }: { readonly id: string }, _ctx: any) {
       return clubService.destroy(id);
@@ -71,11 +69,11 @@ export function clubMutation(
   });
 
   t.field('updateClub', {
-    type: Club,
+    type: Collections.Club,
     args: {
-      id: schema.idArg({ required: true }),
-      name: schema.stringArg(),
-      description: schema.stringArg(),
+      id: idArg({ required: true }),
+      name: stringArg(),
+      description: stringArg(),
     },
     async resolve(
       _root: any,

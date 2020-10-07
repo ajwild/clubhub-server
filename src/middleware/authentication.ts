@@ -1,12 +1,16 @@
+import { FastifyRequest } from 'fastify';
 import { chain, fold, left, right, Either } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { verify } from 'jsonwebtoken';
 import { path } from 'ramda';
+import { DeepReadonly } from 'ts-essentials';
 
 type Token = { readonly [key: string]: string };
 type TokenContext = { readonly token: Token | null };
 
-function getAuthorization(request: any): Either<null, string> {
+function getAuthorization(
+  request: DeepReadonly<FastifyRequest>
+): Either<null, string> {
   const authorizationHeader = path<string>(
     ['headers', 'authorization'],
     request
@@ -24,7 +28,7 @@ function verifyToken(token: string): Either<null, Token> {
   return verifiedToken ? right(verifiedToken) : left(null);
 }
 
-function getTokenContext(request: any): TokenContext {
+function getTokenContext(request: DeepReadonly<FastifyRequest>): TokenContext {
   return pipe(
     right(request),
     chain(getAuthorization),
@@ -37,14 +41,8 @@ function getTokenContext(request: any): TokenContext {
   );
 }
 
-export const authentication = (_config: any) => {
-  // eslint-disable-next-line max-params
-  return async (root: any, args: any, ctx: any, info: any, next: any) => {
-    const contextWithToken = {
-      ...ctx,
-      ...getTokenContext(root),
-    };
-
-    return next(root, args, contextWithToken, info);
-  };
+export const authentication = (
+  request: DeepReadonly<FastifyRequest>
+): TokenContext => {
+  return { ...getTokenContext(request) };
 };

@@ -1,5 +1,6 @@
-/.nexus
+/dist
 /node_modules
+/src/generated
 /fire*-*.log*
 /npm-*.log*
 /yarn-*.log*
