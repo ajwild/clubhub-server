@@ -4,8 +4,10 @@ export const clubSchema: Partial<Schema> = {
   type: 'object',
   properties: {
     id: { type: 'string' },
-    name: { type: 'string' },
     description: { type: 'string' },
+    location: { type: 'string' },
+    name: { type: 'string' },
+    website: { type: 'string' },
   },
-  required: ['name'],
+  required: ['location', 'name'],
 };

@@ -46,8 +46,10 @@ export function clubMutation(
   t.field('createClub', {
     type: Collections.Club,
     args: {
-      name: stringArg({ required: true }),
       description: stringArg(),
+      location: stringArg({ required: true }),
+      name: stringArg({ required: true }),
+      website: stringArg(),
     },
     async resolve(
       _root: any,
@@ -72,8 +74,10 @@ export function clubMutation(
     type: Collections.Club,
     args: {
       id: idArg({ required: true }),
-      name: stringArg(),
       description: stringArg(),
+      location: stringArg(),
+      name: stringArg(),
+      website: stringArg(),
     },
     async resolve(
       _root: any,
