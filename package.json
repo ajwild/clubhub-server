@@ -26,6 +26,7 @@
     "js-data": "^4.0.0-beta.4",
     "js-data-adapter": "^1.0.1",
     "jsonwebtoken": "^8.5.1",
+    "pino-pretty": "^4.3.0",
     "ramda": "^0.27.0"
   },
   "devDependencies": {

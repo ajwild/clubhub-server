@@ -7,7 +7,7 @@ import { authentication } from './middleware/authentication';
 import { permissions } from './middleware/permissions';
 
 const { PORT } = process.env;
-const app = fastify();
+const app = fastify({ logger: { prettyPrint: true } });
 const server = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context: ({ request, _reply }) => {
