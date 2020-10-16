@@ -1,14 +1,21 @@
 /* eslint-disable functional/no-expression-statement */
 
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as T from 'fp-ts/lib/Task';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { idArg, objectType, stringArg } from '@nexus/schema';
+import { StrictOmit } from 'ts-essentials';
 
-import { userSchema, userService } from '../../database';
-import { Collections, DefinitionBlock } from '../../types';
+import { userService } from '../../database';
+import { UserDatabaseSchema, userGraphqlSchema } from '../../schemas/user';
+import { Collections, DefinitionBlock, UpdateArgs } from '../../types';
 import { convertSchemaToDefinition } from '../../utilities';
 
 export const User = objectType({
-  name: Collections.User as typeof Collections.User,
-  definition: convertSchemaToDefinition<typeof Collections.User>(userSchema),
+  name: Collections.User,
+  definition: convertSchemaToDefinition<Collections.User, UserDatabaseSchema>(
+    userGraphqlSchema
+  ),
 });
 
 export function userQuery(
@@ -19,18 +26,28 @@ export function userQuery(
     args: {
       id: idArg({ required: true }),
     },
-    async resolve(_root: any, { id }: { readonly id: string }, _ctx: any) {
-      // Unicorn assumes this is Array.prototype.find()
-      // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
-      return userService.find(id);
-    },
+    resolve: async (_root: any, { id }: { readonly id: string }, _ctx: any) =>
+      pipe(
+        userService.findById<UserDatabaseSchema>(id),
+        TE.fold<
+          Readonly<Error>,
+          UserDatabaseSchema | null,
+          Readonly<Error> | UserDatabaseSchema | null
+        >(T.of, T.of)
+      )(),
   });
 
   t.list.field('users', {
     type: Collections.User,
-    async resolve(_root: any, _args: any, _ctx: any) {
-      return userService.findAll({});
-    },
+    resolve: async (_root: any, _args: any, _ctx: any) =>
+      pipe(
+        userService.findAll<UserDatabaseSchema>(),
+        // eslint-disable-next-line functional/prefer-readonly-type
+        TE.fold<Error[], UserDatabaseSchema[], Error[] | UserDatabaseSchema[]>(
+          T.of,
+          T.of
+        )
+      )(),
   });
 
   return t;
@@ -45,13 +62,18 @@ export function userMutation(
       name: stringArg({ required: true }),
       description: stringArg(),
     },
-    async resolve(
+    resolve: async (
       _root: any,
-      { ...properties }: { readonly [key: string]: any },
+      properties: StrictOmit<UserDatabaseSchema, 'id'>,
       _ctx: any
-    ) {
-      return userService.create(properties);
-    },
+    ) =>
+      pipe(
+        userService.create<UserDatabaseSchema>(properties),
+        TE.fold<Error, UserDatabaseSchema, Error | UserDatabaseSchema>(
+          T.of,
+          T.of
+        )
+      )(),
   });
 
   t.field('deleteUser', {
@@ -59,9 +81,11 @@ export function userMutation(
     args: {
       id: idArg({ required: true }),
     },
-    async resolve(_root: any, { id }: { readonly id: string }, _ctx: any) {
-      return userService.destroy(id);
-    },
+    resolve: async (_root: any, { id }: { readonly id: string }, _ctx: any) =>
+      pipe(
+        userService.destroy(id),
+        TE.fold<Error, null, Error | null>(T.of, T.of)
+      )(),
   });
 
   t.field('updateUser', {
@@ -71,16 +95,19 @@ export function userMutation(
       name: stringArg(),
       description: stringArg(),
     },
-    async resolve(
+    resolve: async (
       _root: any,
-      {
-        id,
-        ...properties
-      }: { readonly [key: string]: any; readonly id: string },
+      args: UpdateArgs<UserDatabaseSchema>,
       _ctx: any
-    ) {
-      return userService.update(id, properties);
-    },
+    ) =>
+      pipe(
+        userService.update<UserDatabaseSchema>(args),
+        TE.fold<
+          Error,
+          UpdateArgs<UserDatabaseSchema>,
+          Error | UpdateArgs<UserDatabaseSchema>
+        >(T.of, T.of)
+      )(),
   });
 
   return t;

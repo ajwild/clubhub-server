@@ -1,27 +1,18 @@
-/* eslint-disable functional/no-expression-statement */
-
 import { Firestore } from '@google-cloud/firestore';
-import { Container } from 'js-data';
-
-import { FirestoreAdapter } from './js-data-firestore';
-import { clubSchema } from './schemas/club';
-import { userSchema } from './schemas/user';
+import setupClubService from './models/club';
+import setupUserService from './models/user';
 
 const db = new Firestore();
 // eslint-disable-next-line functional/no-conditional-statement
 if (process.env.FIRESTORE_HOST) {
+  // eslint-disable-next-line functional/no-expression-statement
   db.settings({
     host: process.env.FIRESTORE_HOST,
     ssl: process.env.FIRESTORE_SSL !== 'false',
   });
 }
 
-const store = new Container();
-const adapter = new FirestoreAdapter({ db });
+const clubService = setupClubService(db);
+const userService = setupUserService(db);
 
-store.registerAdapter('firestore', adapter, { default: true });
-
-const clubService = store.defineMapper('club', { schema: clubSchema });
-const userService = store.defineMapper('user', { schema: userSchema });
-
-export { db, store, clubSchema, clubService, userSchema, userService };
+export { db, clubService, userService };
