@@ -14,7 +14,7 @@ type Club {
 type Mutation {
   createClub(description: String, location: String!, name: String!, slug: String!, website: String): Club
   createUser(description: String, name: String!): User
-  deleteClub(id: ID!, slug: String!): Club
+  deleteClub(id: ID!): Club
   deleteUser(id: ID!): User
   updateClub(description: String, id: ID!, location: String, name: String, website: String): Club
   updateUser(description: String, id: ID!, name: String): User

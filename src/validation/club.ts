@@ -28,16 +28,17 @@ const hasProperty = (property: string) => <T extends MinimalArgs>(
 
 const hasIdProperty = hasProperty('id');
 
-const hasProperties = (properties: readonly string[]) => <T>(
-  data: T
-): E.Either<Error, T> =>
-  properties.every((property) => has(property)(data))
-    ? E.right(data)
-    : E.left(
-        new UserInputError(
-          `Missing one of the following properties: ${properties.join(', ')}`
-        )
-      );
+// Not used at the moment - move to utilities later
+// const hasProperties = (properties: readonly string[]) => <T>(
+//   data: T
+// ): E.Either<Error, T> =>
+//   properties.every((property) => has(property)(data))
+//     ? E.right(data)
+//     : E.left(
+//         new UserInputError(
+//           `Missing one of the following properties: ${properties.join(', ')}`
+//         )
+//       );
 
 const hasPropertiesOtherThanId = <T extends MinimalArgs>(
   data: T
@@ -48,15 +49,8 @@ const hasPropertiesOtherThanId = <T extends MinimalArgs>(
     : E.left(new UserInputError('Properties required'));
 };
 
-type DestroyArgs = {
-  readonly id: string;
-  readonly slug: string;
-};
-
-export const destroy = (
-  args: DestroyArgs
-): E.Either<Readonly<Error>, DestroyArgs> =>
-  hasProperties(['id', 'slug'])(args);
+export const destroy = (id: string): E.Either<Readonly<Error>, string> =>
+  id ? E.right(id) : E.left(new UserInputError('Mising property: id'));
 
 type FindByIdOrSlugArgs = Readonly<
   Pick<Partial<ClubDatabaseSchema>, 'id' | 'slug'>

@@ -30,7 +30,7 @@ export function clubQuery(
     },
     resolve: async (
       _root: any,
-      args: Pick<Partial<ClubDatabaseSchema>, 'id' | 'slug'>,
+      args: Partial<Pick<ClubDatabaseSchema, 'id' | 'slug'>>,
       _ctx: any
     ) =>
       pipe(
@@ -95,15 +95,14 @@ export function clubMutation(
     type: Collections.Club,
     args: {
       id: idArg({ required: true }),
-      slug: stringArg({ required: true }),
     },
     resolve: async (
       _root: any,
-      args: DeepNonNullable<Pick<ClubDatabaseSchema, 'id' | 'slug'>>,
+      { id }: DeepNonNullable<Pick<ClubDatabaseSchema, 'id'>>,
       _ctx: any
     ) =>
       pipe(
-        TE.fromEither(clubValidation.destroy(args)),
+        TE.fromEither(clubValidation.destroy(id)),
         TE.chain(clubService.destroy),
         TE.fold<Readonly<Error>, null, Readonly<Error> | null>(T.of, T.of)
       )(),
